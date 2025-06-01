@@ -1,5 +1,11 @@
-input/*
-output/*
+.env
+.mypy_cache/
+.ruff_cache/
+__pycache__/
 
+venv/
+
+input/*
 !input/.empty
+output/*
 !output/.empty
