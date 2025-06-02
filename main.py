@@ -26,18 +26,18 @@ def main(
     df_modified = df_modified.reset_index()
     save_data(df_modified, output_path)
 
-    # --- Visualization for user feedback ---
-    plt.figure(figsize=(12, 6))
-    for col in df_modified.select_dtypes(include=["number"]).columns:
-        if col != datetime_col:
-            plt.plot(df_modified[datetime_col], df_modified[col], label=col)
-    plt.xlabel(datetime_col)
-    plt.ylabel("Values")
-    plt.title("Resampled and Noised Data")
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-    print("OK")
+    # # --- Visualization for user feedback ---
+    # plt.figure(figsize=(12, 6))
+    # for col in df_modified.select_dtypes(include=["number"]).columns:
+    #     if col != datetime_col:
+    #         plt.plot(df_modified[datetime_col], df_modified[col], label=col)
+    # plt.xlabel(datetime_col)
+    # plt.ylabel("Values")
+    # plt.title("Resampled and Noised Data")
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
+    # print("OK")
 
 
 # --------------------------------------------------------------------
@@ -46,13 +46,13 @@ def main(
 # --------------------------------------------------------------------
 
 if __name__ == "__main__":
-    input_folder = INPUT_DIR / "emflex_prod"
+    input_folder = INPUT_DIR / "real_cud_data"
     for file in input_folder.glob("*.csv"):
         main(
             input_path=input_folder / file.name,
             output_path=OUTPUT_DIR / file.name,
             datetime_col="timestamp",
-            datetime_format=DateTimeFormat(type="DATETIME", value="%Y-%m-%d %H:%M:%S%z"),
+            datetime_format=DateTimeFormat(type="UNIX", value="ms"),
             output_frequency="30s",
             no_negative=True,
             add_noise_to_zeros=False,

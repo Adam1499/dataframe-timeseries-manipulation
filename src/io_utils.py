@@ -22,7 +22,7 @@ def load_data(filepath: Path, datetime_col: str, datetime_format: DateTimeFormat
         raise ValueError(f"Column '{datetime_col}' not found in data.")
 
     if datetime_format.type == "UNIX":
-        df[datetime_col] = pd.to_datetime(df[datetime_col], unit=datetime_format.value, errors="coerce")
+        df[datetime_col] = pd.to_datetime(df[datetime_col], unit=datetime_format.value, errors="coerce", utc=True)
     elif datetime_format.type == "DATETIME":
         df[datetime_col] = pd.to_datetime(df[datetime_col], format=datetime_format.value, errors="coerce")
     else:

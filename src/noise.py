@@ -19,13 +19,7 @@ def add_gaussian_noise(df: pd.DataFrame, no_negative: bool, add_noise_to_zeros: 
 
 
 def add_moving_random_walk_noise(
-    df: pd.DataFrame,
-    no_negative: bool,
-    add_noise_to_zeros: bool,
-    stddev_rw=0.03,
-    stddev_wn=0.02,
-    random_state=None,
-    window_size=60
+    df: pd.DataFrame, no_negative: bool, add_noise_to_zeros: bool, stddev_rw=0.03, stddev_wn=0.02, random_state=None, window_size=60
 ):
     rng = np.random.default_rng(random_state)
     df_noisy = df.copy()
