@@ -1,5 +1,8 @@
+"""Data Transfer Objects (DTOs) for handling DataFrame metadata and settings."""
+
 from dataclasses import dataclass
-from typing import Literal
+import pandas as pd
+from typing import Literal, Union
 
 
 @dataclass
@@ -13,3 +16,10 @@ class DateTimeFormat:
 
     type: Literal["UNIX", "DATETIME"]
     value: str
+
+
+@dataclass
+class ResampleSettings:
+    """Class to represent resampling settings for a DataFrame."""
+
+    resample_frequency: Union[pd.Timedelta, Literal["NO_RESAMPLE"]]

@@ -1,3 +1,5 @@
+"""Io utilities for loading and saving data."""
+
 import pandas as pd
 from pathlib import Path
 
@@ -5,6 +7,7 @@ from src.dto import DateTimeFormat
 
 
 def load_data(filepath: Path, datetime_col: str, datetime_format: DateTimeFormat) -> pd.DataFrame:
+    """Load data from a file and parse the datetime column."""
     if not filepath.exists():
         raise FileNotFoundError(f"File {filepath} does not exist.")
 
@@ -32,4 +35,5 @@ def load_data(filepath: Path, datetime_col: str, datetime_format: DateTimeFormat
 
 
 def save_data(df: pd.DataFrame, filepath: Path):
+    """Save DataFrame to a file."""
     df.to_csv(filepath, index=False)

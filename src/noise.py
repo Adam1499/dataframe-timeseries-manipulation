@@ -1,8 +1,11 @@
+"""Add noise to a DataFrame."""
+
 import numpy as np
 import pandas as pd
 
 
 def add_gaussian_noise(df: pd.DataFrame, no_negative: bool, add_noise_to_zeros: bool, stddev=0.1, random_state=None):
+    """Add Gaussian noise to the DataFrame."""
     rng = np.random.default_rng(random_state)
     df_noisy = df.copy()
     for col in df.columns:
@@ -21,6 +24,7 @@ def add_gaussian_noise(df: pd.DataFrame, no_negative: bool, add_noise_to_zeros: 
 def add_moving_random_walk_noise(
     df: pd.DataFrame, no_negative: bool, add_noise_to_zeros: bool, stddev_rw=0.03, stddev_wn=0.02, random_state=None, window_size=60
 ):
+    """Add moving random walk noise to the DataFrame."""
     rng = np.random.default_rng(random_state)
     df_noisy = df.copy()
     for col in df.columns:
@@ -30,7 +34,7 @@ def add_moving_random_walk_noise(
         noise_rw = rng.normal(0, scale_rw, size=length)
         rolling_rw = pd.Series(noise_rw).rolling(window=window_size, min_periods=1).sum().values
         white_noise = rng.normal(0, scale_wn, size=length)
-        total_noise = rolling_rw + white_noise
+        total_noise = np.asarray(rolling_rw, dtype=float) + white_noise
         if not add_noise_to_zeros:
             mask = df_noisy[col] != 0
             df_noisy.loc[mask, col] += total_noise[mask]

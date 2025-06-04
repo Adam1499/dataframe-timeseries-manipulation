@@ -1,7 +1,10 @@
+"""Main script."""
+
 import matplotlib.pyplot as plt
+import pandas as pd
 from pathlib import Path
 
-from src.dto import DateTimeFormat
+from src.dto import DateTimeFormat, ResampleSettings
 from src.io_utils import load_data, save_data
 from src.noise import add_moving_random_walk_noise
 from src.resample import resample_dataframe
@@ -15,13 +18,14 @@ def main(
     output_path: Path,
     datetime_col: str,
     datetime_format: DateTimeFormat,
-    output_frequency: str,
+    resample_settings: ResampleSettings,
     no_negative: bool,
     add_noise_to_zeros: bool,
 ):
+    """Main function to load data, resample, add noise, and save the modified DataFrame."""
     df = load_data(input_path, datetime_col, datetime_format)
     df = df.set_index(datetime_col)
-    df_modified = resample_dataframe(df, output_frequency)
+    df_modified = resample_dataframe(df, resample_settings)
     df_modified = add_moving_random_walk_noise(df=df_modified, no_negative=no_negative, add_noise_to_zeros=add_noise_to_zeros)
     df_modified = df_modified.reset_index()
     save_data(df_modified, output_path)
@@ -53,7 +57,7 @@ if __name__ == "__main__":
             output_path=OUTPUT_DIR / file.name,
             datetime_col="timestamp",
             datetime_format=DateTimeFormat(type="UNIX", value="ms"),
-            output_frequency="30s",
+            resample_settings=ResampleSettings(resample_frequency=pd.Timedelta(seconds=900)),
             no_negative=True,
             add_noise_to_zeros=False,
         )
