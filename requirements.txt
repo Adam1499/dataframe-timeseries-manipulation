@@ -5,3 +5,5 @@ pandas
 black
 mypy
 ruff
+
+pandas-stubs
