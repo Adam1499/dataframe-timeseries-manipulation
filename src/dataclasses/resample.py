@@ -16,7 +16,7 @@ class ResampleSettings:
 class BasicResample(ResampleSettings):
     """Class for basic resampling with a specified frequency."""
 
-    resample_frequency: pd.Timedelta
+    resample_frequency: str | pd.Timedelta
 
 
 @dataclass

@@ -3,10 +3,10 @@
 import pandas as pd
 from pathlib import Path
 
-from src.dto import DateTimeFormat
+from src.dataclasses.datetimeparser import DateTimeParser, DateTimeParserUNIX, DateTimeParserDATETIME
 
 
-def load_data(filepath: Path, datetime_col: str, datetime_format: DateTimeFormat) -> pd.DataFrame:
+def load_data(filepath: Path, datetime_parser: DateTimeParser) -> pd.DataFrame:
     """Load data from a file and parse the datetime column."""
     if not filepath.exists():
         raise FileNotFoundError(f"File {filepath} does not exist.")
@@ -21,15 +21,15 @@ def load_data(filepath: Path, datetime_col: str, datetime_format: DateTimeFormat
     except Exception as e:
         raise ValueError(f"Failed to load data from {filepath}: {e}")
 
-    if datetime_col not in df.columns:
-        raise ValueError(f"Column '{datetime_col}' not found in data.")
+    if datetime_parser.index_column not in df.columns:
+        raise ValueError(f"Column '{datetime_parser.index_column}' not found in data.")
 
-    if datetime_format.type == "UNIX":
-        df[datetime_col] = pd.to_datetime(df[datetime_col], unit=datetime_format.value, errors="coerce", utc=True)
-    elif datetime_format.type == "DATETIME":
-        df[datetime_col] = pd.to_datetime(df[datetime_col], format=datetime_format.value, errors="coerce")
+    if isinstance(datetime_parser, DateTimeParserUNIX):
+        df[datetime_parser.index_column] = pd.to_datetime(df[datetime_parser.index_column], unit=datetime_parser.format, errors="coerce", utc=True)
+    elif isinstance(datetime_parser, DateTimeParserDATETIME):
+        df[datetime_parser.index_column] = pd.to_datetime(df[datetime_parser.index_column], format=datetime_parser.format, errors="coerce")
     else:
-        raise ValueError(f"Unsupported DateTimeFormat type: {datetime_format.type}")
+        raise ValueError(f"Unsupported DateTimeParser type")
 
     return df
 

@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
 
+from src.dataclasses.datetimeparser import DateTimeParser, DateTimeParserDATETIME, DateTimeParserUNIX
 from src.dataclasses.noise import NoiseSettings, BasicNoise, WithoutNoise
 from src.dataclasses.resample import ResampleSettings, BasicResample, WithoutResample
-from src.dto import DateTimeFormat
 from src.io_utils import load_data, save_data
 from src.noise import noise_dataframe
 from src.resample import resample_dataframe
@@ -18,14 +18,13 @@ OUTPUT_DIR = Path("output")
 def main(
     input_path: Path,
     output_path: Path,
-    datetime_col: str,
-    datetime_format: DateTimeFormat,
+    datetime_settings: DateTimeParser,
     resample_settings: ResampleSettings,
     noise_settings: NoiseSettings,
 ):
     """Main function to load data, resample, add noise, and save the modified DataFrame."""
-    df = load_data(input_path, datetime_col, datetime_format)
-    df = df.set_index(datetime_col)
+    df = load_data(input_path, datetime_settings)
+    df = df.set_index(datetime_settings.index_column)
 
     df_modified = resample_dataframe(df, resample_settings)
     df_modified = noise_dataframe(df=df_modified, noise_settings=noise_settings)
@@ -53,13 +52,12 @@ def main(
 # --------------------------------------------------------------------
 
 if __name__ == "__main__":
-    input_folder = INPUT_DIR / "real_cud_data"
+    input_folder = INPUT_DIR / "emflex_prod"
     for file in input_folder.glob("*.csv"):
         main(
             input_path=input_folder / file.name,
             output_path=OUTPUT_DIR / file.name,
-            datetime_col="timestamp",
-            datetime_format=DateTimeFormat(type="UNIX", value="ms"),
-            resample_settings=WithoutResample(),
+            datetime_settings=DateTimeParserDATETIME(index_column="timestamp"),
+            resample_settings=BasicResample("15t"),
             noise_settings=WithoutNoise(),
         )
